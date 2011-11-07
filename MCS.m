@@ -1,4 +1,4 @@
-function [p,F,pg] = MCS_v1_1(K, NestI,vardef,S)
+function [p,F,pg] = MCS(K, NestI,vardef,S)
 %MCS Modified cuckoo search
 
 %Implimentation of Modified Cuckoo Search
