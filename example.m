@@ -21,7 +21,8 @@ S.pa = 0.75;        %Fraction of eggs discarded each generation
 S.A = 1.0;          %Max step size
 S.maxstep = 10;     %Maximum number of steps to take in a levy flight
 S.plot = 1;         %If you want the results plotted set this to 1
-S.fname = 'obj_v1';    %The function name, if this function gives a complex value the optimser considers it out of bounds
+S.fname = 'obj';    %The function name, if this function gives a complex value the optimser considers it out of bounds
+S.constrain = 1;    %Set to 1 if you want the search constrained within vardef, zero otherwise
 
 %   Tips for choosing the above paramters :-
 %       1) S.A multiplied by S.maxstep is roughly the furthest an egg will move in a
@@ -49,12 +50,12 @@ vardef(2,1:NoDim) = -100;
 
 NoNests = 100;
 
-NestI = LHC_v1(vardef,NoNests); %Generates initial set of eggs
+NestI = LHC(vardef,NoNests); %Generates initial set of eggs
 
-NoGen = 1000;
+NoGen = 100;
 
 %Run optimiser
-[p,F,pg] = MCS_v1_1(NoGen, NestI, vardef, S);
+[p,F,pg] = MCS(NoGen, NestI, vardef, S);
 
 %The optimum position is then pg
 

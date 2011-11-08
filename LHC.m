@@ -1,4 +1,4 @@
-function [samples] = LHC_v1(vardef,N)
+function [samples] = LHC(vardef,N)
 %LHC Produces latin hypercube sampling of variables defines by vardef
 %   vardef(2,NoVar) - first row gives max value second min value
 %   N = number of samples

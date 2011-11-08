@@ -1,4 +1,4 @@
-function [ ob ] = obj_v1( x )
+function [ ob ] = obj( x )
 %OBJ Test objective function
 
 ob = sum((x).^2);

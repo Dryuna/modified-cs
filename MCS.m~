@@ -47,7 +47,7 @@ function [p,F,pg] = MCS(K, NestI,vardef,S)
 %  S.plot      %If you want the results plotted set this to 1
 %  S.fname     %The function name or handle, if this function gives a complex value the optimser considers it out of bounds
 %  S.constrain %Set to 1 if you want to constrain the search inside the
-%  bounds defined by vardef or zero if you want unconstrained
+%  bounds defined by vardef
 
 % ----- Outputs -----
 
@@ -95,7 +95,7 @@ ptemp = zeros(1,NoDim);
 
 for i = 1:NoNests
     pi(i,:) = NestI(i,:);
-    if or(and(all(lt(pi(i,:),vardef(1,:))),all(gt(pi(i,:),vardef(2,:)))),eq(S.constrain,0))
+    if and(all(lt(pi(i,:),vardef(1,:))),all(gt(pi(i,:),vardef(2,:))))
         Ftemp = feval(f,pi(i,:));
     else
         Ftemp = sqrt(-1);
@@ -167,7 +167,7 @@ for G = 2:K
         end
         
         %Check position is inside bounds
-        if or(and(all(lt(ptemp,vardef(1,:))),all(gt(ptemp,vardef(2,:)))),eq(S.constrain,0))
+        if and(all(lt(ptemp,vardef(1,:))),all(gt(ptemp,vardef(2,:))))
             Ftemp = feval(f,ptemp);
         else
             Ftemp = sqrt(-1);
@@ -235,11 +235,7 @@ for G = 2:K
         end
         
         %Check position is inside bounds
-        if or(and(all(lt(ptemp,vardef(1,:))),all(gt(ptemp,vardef(2,:)))),eq(S.constrain,0))
-            Ftemp = feval(f,ptemp);
-        else
-            Ftemp = sqrt(-1);
-        end
+        Ftemp = feval(f,ptemp);
         
         
         if isreal(Ftemp)
