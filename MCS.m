@@ -42,7 +42,8 @@ function [p,F,pg] = MCS(K, NestI,vardef,S)
 % size(vardef) = (2,No dimensions)  vardef(1,:) = upper bounds, vardef(2,:) = lower bound.
 % S is a structure containing the parameters for MCS
 %  S.pa        %Fraction of eggs discarded each generation
-%  S.A         %Max step size
+%  S.A         %Maximum distance a cuckoo can travel in one step as
+%  fraction of search space diagonal
 %  S.maxstep   %Maximum number of steps to take in a levy flight
 %  S.plot      %If you want the results plotted set this to 1
 %  S.fname     %The function name or handle, if this function gives a complex value the optimser considers it out of bounds
@@ -60,7 +61,7 @@ function [p,F,pg] = MCS(K, NestI,vardef,S)
 %----------------
 
 pa =S.pa;       %Fraction of nests replaced each generation
-A = S.A;        %Max Step size
+
 ptop = 1-pa;    %Fraction of the best nests use in the enforced search
 
 f = S.fname;    %Function name
@@ -69,7 +70,18 @@ f = S.fname;    %Function name
 %Find number of dimensions and number of nests
 [NoNests,NoDim] = size(NestI);
 
+%Scale the coordinates between 1 and 0 based on vardef
+NormFact = zeros(1,NoDim);
+MinFact = zeros(1,NoDim);
+for i=1:NoDim
+    NormFact(1,i) = max(NestI(:,i))-min(NestI(:,i));
+    MinFact(1,i) = min(NestI(:,i));
+    NestI(:,i) = (NestI(:,i)-MinFact(1,i))./NormFact(1,i);
+end
+
+
 MaxNoSteps = S.maxstep; %Mean number of steps to take in the random walk
+A = (sqrt(NoDim)/MaxNoSteps)*S.A;   %Max Step size calculated  
 
 %Constants
 %--------------
@@ -95,8 +107,9 @@ ptemp = zeros(1,NoDim);
 
 for i = 1:NoNests
     pi(i,:) = NestI(i,:);
-    if or(and(all(lt(pi(i,:),vardef(1,:))),all(gt(pi(i,:),vardef(2,:)))),eq(S.constrain,0))
-        Ftemp = feval(f,pi(i,:));
+    if or(and(all(le(pi(i,:),1)),all(ge(pi(i,:),0))),eq(S.constrain,0))
+        pix = (pi(i,:).*NormFact)+MinFact;
+        Ftemp = feval(f,pix);
     else
         Ftemp = sqrt(-1);
     end
@@ -123,7 +136,7 @@ if eq(S.plot,1)
     clf
     subplot(2,1,1)
     plot(pi(:,1),pi(:,2),'o')
-    set(gca,'XLim',[vardef(2,1) vardef(1,1)],'YLim',[vardef(2,2) vardef(1,2)])
+    set(gca,'XLim',[0 1],'YLim',[0 1])
     subplot(2,1,2)
     plot(FPlot(1,1),'-+r')
     %set(gca,'YScale','log')
@@ -153,7 +166,9 @@ for G = 2:K
         a = A/(G^(1/2)); %Larger step for exploration walks
         %Using Levy flight
         %a) Random walk
-        NoSteps = round(exprnd(2*MaxNoSteps,1,1));
+        NoSteps = round(exprnd(MaxNoSteps,1,1));
+        NoSteps = max(MaxNoSteps,NoSteps);
+        
         
         dx = levi_walk(NoSteps,NoDim);
         
@@ -167,8 +182,9 @@ for G = 2:K
         end
         
         %Check position is inside bounds
-        if or(and(all(lt(ptemp,vardef(1,:))),all(gt(ptemp,vardef(2,:)))),eq(S.constrain,0))
-            Ftemp = feval(f,ptemp);
+        if or(and(all(le(ptemp,1)),all(ge(ptemp,0))),eq(S.constrain,0))
+            ptempx = (ptemp.*NormFact)+MinFact;
+            Ftemp = feval(f,ptempx);
         else
             Ftemp = sqrt(-1);
         end
@@ -193,7 +209,8 @@ for G = 2:K
         if randNest == C
             % Perform random walk instead
             a = A/(G^2); %Smaller step for local walk
-            NoSteps = round(exprnd(2*MaxNoSteps,1,1));
+             NoSteps = round(exprnd(MaxNoSteps,1,1));
+             NoSteps = max(MaxNoSteps,NoSteps);
             
             dx = levi_walk(NoSteps,NoDim);
             
@@ -235,8 +252,9 @@ for G = 2:K
         end
         
         %Check position is inside bounds
-        if or(and(all(lt(ptemp,vardef(1,:))),all(gt(ptemp,vardef(2,:)))),eq(S.constrain,0))
-            Ftemp = feval(f,ptemp);
+        if or(and(all(le(ptemp,1)),all(ge(ptemp,0))),eq(S.constrain,0))
+            ptempx = (ptemp.*NormFact)+MinFact;
+            Ftemp = feval(f,ptempx);
         else
             Ftemp = sqrt(-1);
         end
@@ -278,7 +296,7 @@ for G = 2:K
         hold on
         subplot(2,1,1)
         plot(pi(:,1),pi(:,2),'o')
-        set(gca,'XLim',[vardef(2,1) vardef(1,1)],'YLim',[vardef(2,2) vardef(1,2)])
+        set(gca,'XLim',[0 1],'YLim',[0 1])
         subplot(2,1,2)
         plot(FPlot(1:G,1),'-+r')
         %set(gca,'YScale','log')
@@ -293,7 +311,7 @@ end
 %Find best solution
 [Fg,ind] = min(Fi);
 
-pg = pi(ind,:);
+pg = (pi(ind,:).*NormFact)+MinFact;
 
 
 
