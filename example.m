@@ -19,7 +19,7 @@ clc
 %The structure S contains all the parameters for the MCS
 
 S.pa = 0.75;        %Fraction of eggs discarded each generation
-S.maxstep = 10;     %Maximum number of steps to take in a levy flight
+S.maxstep = 100;     %Maximum number of steps to take in a levy flight
 S.plot = 1;         %If you want the results plotted set this to 1
 S.fname = 'obj';    %The function name, if this function gives a complex value the optimser considers it out of bounds
 S.constrain = 1;    %Set to 1 if you want the search constrained within vardef, zero otherwise
