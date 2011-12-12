@@ -1,4 +1,4 @@
-function [p,F,pg] = MCS(K, NestI,vardef,S)
+function [p,F,pg] = MCS(K, NestI, S)
 %MCS Modified cuckoo search
 
 %Implimentation of Modified Cuckoo Search
@@ -167,18 +167,15 @@ for G = 2:K
         %Using Levy flight
         %a) Random walk
         NoSteps = round(exprnd(MaxNoSteps,1,1));
-        NoSteps = max(MaxNoSteps,NoSteps);
+        NoSteps = min(MaxNoSteps,NoSteps);
         
         
         dx = levi_walk(NoSteps,NoDim);
         
         for j = 1:NoDim
-            %Random number to determine direction
-            if rand(1)>0.5
+            
                 ptemp(1,j) = a*dx(1,j) + pi(NoNests - i + 1, j);
-            else
-                ptemp(1,j) = a*dx(1,j) - pi(NoNests - i + 1, j);
-            end
+            
         end
         
         %Check position is inside bounds
@@ -210,17 +207,15 @@ for G = 2:K
             % Perform random walk instead
             a = A/(G^2); %Smaller step for local walk
              NoSteps = round(exprnd(MaxNoSteps,1,1));
-             NoSteps = max(MaxNoSteps,NoSteps);
+             NoSteps = min(MaxNoSteps,NoSteps);
             
             dx = levi_walk(NoSteps,NoDim);
             
             for j = 1:NoDim
-                %Random number to determine direction
-                if rand(1)>0.5
+               
+               
                     ptemp(1,j) = a*dx(1,j) + pi(NoNests - i + 1, j);
-                else
-                    ptemp(1,j) = a*dx(1,j) - pi(NoNests - i + 1, j);
-                end
+                
             end
             
         else

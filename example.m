@@ -56,7 +56,7 @@ NestI = LHC(vardef,NoNests); %Generates initial set of eggs
 NoGen = 1000;
 
 %Run optimiser
-[p,F,pg] = MCS(NoGen, NestI, vardef, S);
+[p,F,pg] = MCS(NoGen, NestI, S);
 
 %The optimum position is then pg
 
