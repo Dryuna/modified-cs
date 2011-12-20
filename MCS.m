@@ -2,6 +2,8 @@ function [p,F,pg] = MCS(K, NestI, S)
 %MCS Modified cuckoo search
 
 %Implimentation of Modified Cuckoo Search
+%This code minimises the function passed to it, so your objective function
+%should be expressed in terms of a minimisation problem
 
 %See example_v1.m for more help
 

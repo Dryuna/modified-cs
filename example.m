@@ -22,6 +22,7 @@ S.pa = 0.75;        %Fraction of eggs discarded each generation
 S.maxstep = 100;     %Maximum number of steps to take in a levy flight
 S.plot = 1;         %If you want the results plotted set this to 1
 S.fname = 'obj';    %The function name, if this function gives a complex value the optimser considers it out of bounds
+                    %The optimiser minimises this function
 S.constrain = 1;    %Set to 1 if you want the search constrained within vardef, zero otherwise
 S.A = 0.01; %   Maximum distance a cuckoo can travel in one step as fraction of search space diagonal
 
