@@ -1,4 +1,4 @@
-function [p,F,pg] = MCS(K, NestI, S)
+function [p,F,pg] = MCS(K, NestI, S, vardef)
 %MCS Modified cuckoo search
 
 %Implimentation of Modified Cuckoo Search
@@ -76,8 +76,8 @@ f = S.fname;    %Function name
 NormFact = zeros(1,NoDim);
 MinFact = zeros(1,NoDim);
 for i=1:NoDim
-    NormFact(1,i) = max(NestI(:,i))-min(NestI(:,i));
-    MinFact(1,i) = min(NestI(:,i));
+    NormFact(1,i) = vardef(1,i)-vardef(2,i);
+    MinFact(1,i) = vardef(2,i);
     NestI(:,i) = (NestI(:,i)-MinFact(1,i))./NormFact(1,i);
 end
 
@@ -216,7 +216,7 @@ for G = 2:K
             for j = 1:NoDim
                
                
-                    ptemp(1,j) = a*dx(1,j) + pi(NoNests - i + 1, j);
+                    ptemp(1,j) = a*dx(1,j) + pi(NoNests - C + 1, j);
                 
             end
             
