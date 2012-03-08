@@ -78,8 +78,8 @@ MinFact = zeros(1,NoDim);
 for i=1:NoDim
     NormFact(1,i) = vardef(1,i)-vardef(2,i);
     if eq(NormFact(1,i),0)
-79	        NormFact(1,i) = 0;
-80	end
+          NormFact(1,i) = 0;
+  	end
     MinFact(1,i) = vardef(2,i);
     NestI(:,i) = (NestI(:,i)-MinFact(1,i))./NormFact(1,i);
 end
